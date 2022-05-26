@@ -16,9 +16,9 @@ public class CameraUtil {
         return (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
     }
 
-    public static List<CameraDescription> getAvailableCameras(Activity activity)
+    public static List<CameraDescription> getAvailableCameras(Context context)
             throws CameraAccessException {
-        CameraManager cameraManager = getCameraManager(activity);
+        CameraManager cameraManager = getCameraManager(context);
         String[] cameraNames = cameraManager.getCameraIdList();
         List<CameraDescription> cameras = new ArrayList<>();
         for (String cameraName : cameraNames) {

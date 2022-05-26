@@ -10,8 +10,11 @@ import com.xuzaixiang.camera.features.exposurelock.ExposureLockFeature;
 import com.xuzaixiang.camera.features.exposureoffset.ExposureOffsetFeature;
 import com.xuzaixiang.camera.features.flash.FlashFeature;
 import com.xuzaixiang.camera.features.focuspoint.FocusPointFeature;
+import com.xuzaixiang.camera.features.fpsrange.FpsRangeFeature;
+import com.xuzaixiang.camera.features.noisereduction.NoiseReductionFeature;
 import com.xuzaixiang.camera.features.resolution.ResolutionFeature;
 import com.xuzaixiang.camera.features.resolution.ResolutionPreset;
+import com.xuzaixiang.camera.features.zoomlevel.ZoomLevelFeature;
 
 
 public class CameraFeatureFactoryImpl implements CameraFeatureFactory {
@@ -37,14 +40,14 @@ public class CameraFeatureFactoryImpl implements CameraFeatureFactory {
   public FlashFeature createFlashFeature(@NonNull CameraProperties cameraProperties) {
     return new FlashFeature(cameraProperties);
   }
-//
-//  @Override
-//  public ResolutionFeature createResolutionFeature(
-//      @NonNull CameraProperties cameraProperties,
-//      ResolutionPreset initialSetting,
-//      String cameraName) {
-//    return new ResolutionFeature(cameraProperties, initialSetting, cameraName);
-//  }
+
+  @Override
+  public ResolutionFeature createResolutionFeature(
+      @NonNull CameraProperties cameraProperties,
+      ResolutionPreset initialSetting,
+      String cameraName) {
+    return new ResolutionFeature(cameraProperties, initialSetting, cameraName);
+  }
 //
 //  @Override
 //  public FocusPointFeature createFocusPointFeature(
@@ -53,10 +56,10 @@ public class CameraFeatureFactoryImpl implements CameraFeatureFactory {
 //    return new FocusPointFeature(cameraProperties, sensorOrientationFeature);
 //  }
 //
-//  @Override
-//  public FpsRangeFeature createFpsRangeFeature(@NonNull CameraProperties cameraProperties) {
-//    return new FpsRangeFeature(cameraProperties);
-//  }
+  @Override
+  public FpsRangeFeature createFpsRangeFeature(@NonNull CameraProperties cameraProperties) {
+    return new FpsRangeFeature(cameraProperties);
+  }
 //
 //  @Override
 //  public SensorOrientationFeature createSensorOrientationFeature(
@@ -66,10 +69,10 @@ public class CameraFeatureFactoryImpl implements CameraFeatureFactory {
 //    return new SensorOrientationFeature(cameraProperties, activity, dartMessenger);
 //  }
 //
-//  @Override
-//  public ZoomLevelFeature createZoomLevelFeature(@NonNull CameraProperties cameraProperties) {
-//    return new ZoomLevelFeature(cameraProperties);
-//  }
+  @Override
+  public ZoomLevelFeature createZoomLevelFeature(@NonNull CameraProperties cameraProperties) {
+    return new ZoomLevelFeature(cameraProperties);
+  }
 //
 //  @Override
 //  public ExposurePointFeature createExposurePointFeature(
@@ -78,9 +81,9 @@ public class CameraFeatureFactoryImpl implements CameraFeatureFactory {
 //    return new ExposurePointFeature(cameraProperties, sensorOrientationFeature);
 //  }
 //
-//  @Override
-//  public NoiseReductionFeature createNoiseReductionFeature(
-//      @NonNull CameraProperties cameraProperties) {
-//    return new NoiseReductionFeature(cameraProperties);
-//  }
+  @Override
+  public NoiseReductionFeature createNoiseReductionFeature(
+      @NonNull CameraProperties cameraProperties) {
+    return new NoiseReductionFeature(cameraProperties);
+  }
 }
