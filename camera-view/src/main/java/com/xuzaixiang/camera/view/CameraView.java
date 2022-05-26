@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.xuzaixiang.camera.Camera;
 import com.xuzaixiang.camera.CameraCallback;
 import com.xuzaixiang.camera.CameraDescription;
+import com.xuzaixiang.camera.CameraProvider;
 import com.xuzaixiang.camera.CameraUtil;
 import com.xuzaixiang.camera.ImageFormatGroup;
 import com.xuzaixiang.camera.features.resolution.ResolutionPreset;
@@ -67,6 +68,7 @@ public class CameraView extends TextureView implements CameraCallback, TextureVi
             return;
         }
         try {
+            CameraProvider.getInstance();
             mCamera = new Camera(getContext(), surface, descriptions.get(0), this, true, ResolutionPreset.high);
             mCamera.open(ImageFormatGroup.yuv_420);
         } catch (CameraAccessException e) {

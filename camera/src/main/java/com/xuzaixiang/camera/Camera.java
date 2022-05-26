@@ -22,7 +22,6 @@ import com.xuzaixiang.camera.features.HandlerThreadFactory;
 import com.xuzaixiang.camera.features.resolution.ResolutionFeature;
 import com.xuzaixiang.camera.features.resolution.ResolutionPreset;
 
-
 public class Camera {
     private final Context context;
     private final boolean enableAudio;
@@ -38,9 +37,7 @@ public class Camera {
     private Handler backgroundHandler;
     private CameraSession cameraSession;
 
-
     private static final String TAG = "Camera";
-
 
     public Camera(
             Context context,

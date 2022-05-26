@@ -5,7 +5,7 @@ public class CameraDescription {
     private final int mSensorOrientation;
     private final CameraLensDirection mLensDirection;
 
-    public CameraDescription(String name, int sensorOrientation, CameraLensDirection lensDirection) {
+    CameraDescription(String name, int sensorOrientation, CameraLensDirection lensDirection) {
         mName = name;
         mSensorOrientation = sensorOrientation;
         mLensDirection = lensDirection;
