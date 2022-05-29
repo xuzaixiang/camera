@@ -11,7 +11,16 @@ public class CameraThread implements Executor {
 
     public CameraThread() {
         mThread = new HandlerThread("CameraThread");
+        mThread.start();
         mHandler = new Handler(mThread.getLooper());
+    }
+
+    public void stop() {
+        mThread.quitSafely();
+        try {
+            mThread.join();
+        } catch (InterruptedException ignored) {
+        }
     }
 
     public Handler getHandler() {

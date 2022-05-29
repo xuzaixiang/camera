@@ -6,18 +6,25 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class CameraUtil {
+class CameraUtil {
 
-    static CameraManager getCameraManager(Context context) {
+    static CameraManager getCameraManager(@NonNull Context context) {
         return (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
     }
 
-    public static List<CameraDescription> getAvailableCameras(Context context)
+    @NonNull
+    static List<CameraDescription> getAvailableCameras(Context context) throws CameraAccessException {
+        return getAvailableCameras(getCameraManager(context));
+    }
+
+    @NonNull
+    static List<CameraDescription> getAvailableCameras( @NonNull CameraManager cameraManager)
             throws CameraAccessException {
-        CameraManager cameraManager = getCameraManager(context);
         String[] cameraNames = cameraManager.getCameraIdList();
         List<CameraDescription> cameras = new ArrayList<>();
         for (String cameraName : cameraNames) {

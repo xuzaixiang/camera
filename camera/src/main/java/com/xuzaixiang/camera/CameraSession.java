@@ -1,6 +1,5 @@
-package com.xuzaixiang.camera.features;
+package com.xuzaixiang.camera;
 
-import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
@@ -10,6 +9,7 @@ import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.OutputConfiguration;
 import android.hardware.camera2.params.SessionConfiguration;
+import android.media.ImageReader;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
@@ -18,9 +18,8 @@ import android.view.Surface;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.xuzaixiang.camera.CameraCallback;
-import com.xuzaixiang.camera.CameraDeviceWrapper;
-import com.xuzaixiang.camera.ImageFormatGroup;
+import com.xuzaixiang.camera.features.CameraFeature;
+import com.xuzaixiang.camera.features.CameraFeatures;
 import com.xuzaixiang.camera.features.resolution.ResolutionFeature;
 
 import java.util.ArrayList;
@@ -38,19 +37,17 @@ public class CameraSession {
 
     private final CameraFeatures cameraFeatures;
     private final CameraDeviceWrapper cameraDevice;
-    private final SurfaceTexture surfaceTexture;
+    private final SurfaceProvider mSurfaceProvider;
     private final Handler handler;
     private final CameraCallback callback;
 
-//    private ImageReader pictureImageReader;
-//    private ImageReader imageStreamReader;
+    private ImageReader pictureImageReader;
 
     private CameraCaptureSession session;
     private CaptureRequest.Builder previewRequestBuilder;
 
     public CameraSession(
-            ImageFormatGroup imageFormat,
-            SurfaceTexture surfaceTexture,
+            SurfaceProvider provider,
             Handler handler,
             CameraFeatures cameraFeatures,
             CameraDeviceWrapper cameraDevice,
@@ -60,19 +57,13 @@ public class CameraSession {
         this.handler = handler;
         this.cameraDevice = cameraDevice;
         this.cameraFeatures = cameraFeatures;
-        this.surfaceTexture = surfaceTexture;
+        this.mSurfaceProvider = provider;
         final ResolutionFeature resolutionFeature = cameraFeatures.getResolution();
 //        pictureImageReader =
 //                ImageReader.newInstance(
 //                        resolutionFeature.getCaptureSize().getWidth(),
 //                        resolutionFeature.getCaptureSize().getHeight(),
 //                        ImageFormat.JPEG,
-//                        1);
-//        imageStreamReader =
-//                ImageReader.newInstance(
-//                        resolutionFeature.getPreviewSize().getWidth(),
-//                        resolutionFeature.getPreviewSize().getHeight(),
-//                        imageFormat.value(),
 //                        1);
     }
 
@@ -90,43 +81,43 @@ public class CameraSession {
 
         try {
 //            if (!pausedPreview) {
-                session.setRepeatingRequest(
-                        previewRequestBuilder.build(), new CameraCaptureSession.CaptureCallback() {
-                            @Override
-                            public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
-                                super.onCaptureStarted(session, request, timestamp, frameNumber);
-                            }
+            session.setRepeatingRequest(
+                    previewRequestBuilder.build(), new CameraCaptureSession.CaptureCallback() {
+                        @Override
+                        public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
+                            super.onCaptureStarted(session, request, timestamp, frameNumber);
+                        }
 
-                            @Override
-                            public void onCaptureProgressed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureResult partialResult) {
-                                super.onCaptureProgressed(session, request, partialResult);
-                            }
+                        @Override
+                        public void onCaptureProgressed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureResult partialResult) {
+                            super.onCaptureProgressed(session, request, partialResult);
+                        }
 
-                            @Override
-                            public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-                                super.onCaptureCompleted(session, request, result);
-                            }
+                        @Override
+                        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+                            super.onCaptureCompleted(session, request, result);
+                        }
 
-                            @Override
-                            public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
-                                super.onCaptureFailed(session, request, failure);
-                            }
+                        @Override
+                        public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
+                            super.onCaptureFailed(session, request, failure);
+                        }
 
-                            @Override
-                            public void onCaptureSequenceCompleted(@NonNull CameraCaptureSession session, int sequenceId, long frameNumber) {
-                                super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
-                            }
+                        @Override
+                        public void onCaptureSequenceCompleted(@NonNull CameraCaptureSession session, int sequenceId, long frameNumber) {
+                            super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
+                        }
 
-                            @Override
-                            public void onCaptureSequenceAborted(@NonNull CameraCaptureSession session, int sequenceId) {
-                                super.onCaptureSequenceAborted(session, sequenceId);
-                            }
+                        @Override
+                        public void onCaptureSequenceAborted(@NonNull CameraCaptureSession session, int sequenceId) {
+                            super.onCaptureSequenceAborted(session, sequenceId);
+                        }
 
-                            @Override
-                            public void onCaptureBufferLost(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull Surface target, long frameNumber) {
-                                super.onCaptureBufferLost(session, request, target, frameNumber);
-                            }
-                        }, handler);
+                        @Override
+                        public void onCaptureBufferLost(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull Surface target, long frameNumber) {
+                            super.onCaptureBufferLost(session, request, target, frameNumber);
+                        }
+                    }, handler);
 //            }
 
             if (onSuccessCallback != null) {
@@ -146,18 +137,22 @@ public class CameraSession {
         closeCaptureSession();
         previewRequestBuilder = cameraDevice.createCaptureRequest(templateType);
 
+        SurfaceRequest request = new SurfaceRequest();
+        mSurfaceProvider.onSurfaceRequested(request);
         ResolutionFeature resolutionFeature = cameraFeatures.getResolution();
-        surfaceTexture.setDefaultBufferSize(
+        request.transform(
                 resolutionFeature.getPreviewSize().getWidth(),
-                resolutionFeature.getPreviewSize().getHeight());
-        Surface flutterSurface = new Surface(surfaceTexture);
-        previewRequestBuilder.addTarget(flutterSurface);
+                resolutionFeature.getPreviewSize().getHeight()
+        );
+
+        Surface surface = request.getSurface().get(0);
+        previewRequestBuilder.addTarget(surface);
 
         List<Surface> remainingSurfaces = Arrays.asList(surfaces);
         if (templateType != CameraDevice.TEMPLATE_PREVIEW) {
             // If it is not preview mode, add all surfaces as targets.
-            for (Surface surface : remainingSurfaces) {
-                previewRequestBuilder.addTarget(surface);
+            for (Surface s : remainingSurfaces) {
+                previewRequestBuilder.addTarget(s);
             }
         }
 
@@ -168,7 +163,7 @@ public class CameraSession {
                     @Override
                     public void onConfigured(@NonNull CameraCaptureSession session) {
                         Log.i(TAG, "CameraCaptureSession onConfigured");
-                        if ( captureSessionClosed) {
+                        if (captureSessionClosed) {
                             CameraSession.this.callback.onError("The camera was closed during configuration.");
                             return;
                         }
@@ -182,7 +177,7 @@ public class CameraSession {
 
                         refreshPreviewCaptureSession(
                                 onSuccessCallback, (code, message) ->
-                                CameraSession.this.callback.onError(message)
+                                        CameraSession.this.callback.onError(message)
                         );
                     }
 
@@ -202,9 +197,9 @@ public class CameraSession {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // Collect all surfaces to render to.
             List<OutputConfiguration> configs = new ArrayList<>();
-            configs.add(new OutputConfiguration(flutterSurface));
-            for (Surface surface : remainingSurfaces) {
-                configs.add(new OutputConfiguration(surface));
+            configs.add(new OutputConfiguration(surface));
+            for (Surface s : remainingSurfaces) {
+                configs.add(new OutputConfiguration(s));
             }
             cameraDevice.createCaptureSession(
                     new SessionConfiguration(
@@ -215,7 +210,7 @@ public class CameraSession {
         } else {
             // Collect all surfaces to render to.
             List<Surface> surfaceList = new ArrayList<>();
-            surfaceList.add(flutterSurface);
+            surfaceList.add(surface);
             surfaceList.addAll(remainingSurfaces);
             cameraDevice.createCaptureSession(surfaceList, callback, handler);
         }
@@ -247,10 +242,6 @@ public class CameraSession {
 //        if (pictureImageReader != null) {
 //            pictureImageReader.close();
 //            pictureImageReader = null;
-//        }
-//        if (imageStreamReader != null) {
-//            imageStreamReader.close();
-//            imageStreamReader = null;
 //        }
 //        if (mediaRecorder != null) {
 //            mediaRecorder.reset();
