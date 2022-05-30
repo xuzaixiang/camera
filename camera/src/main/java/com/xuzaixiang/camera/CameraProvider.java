@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CameraProvider {
 
@@ -25,6 +26,19 @@ public class CameraProvider {
 
     public List<CameraDescription> getCameraDescription() {
         return mCameraDescription;
+    }
+
+    @Nullable
+    public Camera newCamera(@NonNull String cameraName) {
+        if (mCameraDescription.isEmpty()) {
+            return null;
+        }
+        for (CameraDescription description : mCameraDescription) {
+            if (Objects.equals(description.getName(), cameraName)) {
+                return newCamera(description);
+            }
+        }
+        return null;
     }
 
     @Nullable
