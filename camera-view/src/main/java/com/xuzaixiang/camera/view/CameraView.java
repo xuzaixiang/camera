@@ -52,12 +52,6 @@ public class CameraView extends TextureView implements CameraCallback, TextureVi
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-    }
-
-
-    @Override
     public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surfaceTexture, int width, int height) {
         Executor executor = ContextCompat.getMainExecutor(getContext());
         CameraProvider.getInstance(getContext()).addListener(executor, provider -> {
