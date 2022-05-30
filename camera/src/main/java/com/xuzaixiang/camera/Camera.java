@@ -18,12 +18,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Camera {
 
-    public interface OpenCallback {
+    public interface Callback {
         void onOpened();
 
         void onClosed();
 
         void onError(String errCode, String errDescription);
+
+        void onSurfaceRequest(SurfaceRequest request);
     }
 
     private final Context mContext;
@@ -56,12 +58,8 @@ public class Camera {
         mHandler = new CameraThread();
     }
 
-    public void setSurfaceProvider(Executor executor, SurfaceProvider provider) {
-
-    }
-
     @SuppressLint("MissingPermission")
-    public void open(ResolutionPreset resolutionPreset, SurfaceProvider provider, OpenCallback callback) {
+    public void open(ResolutionPreset resolutionPreset, Callback callback) {
         if (mIsClosed.get()) {
             throw new RuntimeException("Camera had closed.");
         }
@@ -75,7 +73,7 @@ public class Camera {
                 @Override
                 public void onOpened(@NonNull CameraDevice camera) {
                     cameraSession = new CameraSession(
-                            provider,
+                            callback,
                             mHandler.getHandler(),
                             mCameraFeatures,
                             new DefaultCameraDeviceWrapper(camera),
@@ -133,6 +131,14 @@ public class Camera {
             e.printStackTrace();
             callback.onError("CameraAccess", e.getMessage());
         }
+    }
+
+    public boolean isClosed() {
+        return mIsClosed.get();
+    }
+
+    public boolean isClosing(){
+        return mIsClosing.get();
     }
 
     public void close() {

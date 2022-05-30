@@ -13,6 +13,7 @@ import android.media.ImageReader;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Size;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
@@ -37,7 +38,7 @@ public class CameraSession {
 
     private final CameraFeatures cameraFeatures;
     private final CameraDeviceWrapper cameraDevice;
-    private final SurfaceProvider mSurfaceProvider;
+    private final Camera.Callback mSurfaceProvider;
     private final Handler handler;
     private final CameraCallback callback;
 
@@ -47,7 +48,7 @@ public class CameraSession {
     private CaptureRequest.Builder previewRequestBuilder;
 
     public CameraSession(
-            SurfaceProvider provider,
+            Camera.Callback provider,
             Handler handler,
             CameraFeatures cameraFeatures,
             CameraDeviceWrapper cameraDevice,
@@ -137,13 +138,11 @@ public class CameraSession {
         closeCaptureSession();
         previewRequestBuilder = cameraDevice.createCaptureRequest(templateType);
 
-        SurfaceRequest request = new SurfaceRequest();
-        mSurfaceProvider.onSurfaceRequested(request);
         ResolutionFeature resolutionFeature = cameraFeatures.getResolution();
-        request.transform(
-                resolutionFeature.getPreviewSize().getWidth(),
-                resolutionFeature.getPreviewSize().getHeight()
-        );
+        int width = resolutionFeature.getPreviewSize().getWidth();
+        int height = resolutionFeature.getPreviewSize().getHeight();
+        SurfaceRequest request = new SurfaceRequest(new Size(width,height));
+        mSurfaceProvider.onSurfaceRequest(request);
 
         Surface surface = request.getSurface().get(0);
         previewRequestBuilder.addTarget(surface);

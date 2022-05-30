@@ -28,6 +28,19 @@ public class CameraProvider {
     }
 
     @Nullable
+    public Camera newCamera(@NonNull CameraLensDirection direction) {
+        if (mCameraDescription.isEmpty()) {
+            return null;
+        }
+        for (CameraDescription description : mCameraDescription) {
+            if (description.getLensDirection() == direction) {
+                return newCamera(description);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
     public Camera newCamera(@NonNull CameraDescription description) {
         Camera camera;
         try {
