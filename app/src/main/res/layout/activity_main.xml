@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context="an.xuzaixiang.camera.demo.MainActivity">
 
-    <com.xuzaixiang.camera.view.CameraView
+    <an.xuzaixiang.camera.view.CameraView
         android:id="@+id/camera_view"
         android:layout_width="0dp"
         android:layout_height="0dp"

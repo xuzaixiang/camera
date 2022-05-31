@@ -20,7 +20,7 @@
             android:name=".CameraXActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="an.xuzaixiang.camera.demo.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
