@@ -1,0 +1,67 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "an.xuzaixiang",
+    "module": "camera",
+    "version": "0.0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.3.3"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "camera-0.0.1.aar",
+          "url": "camera-0.0.1.aar",
+          "size": 53634,
+          "sha512": "ead6444aa4fcb40fbf54f575a6390441fe9a5b41e5364fc6e9ff5e5a76d08d4c61ed1e035e16449983a8d29bb5ea9fe04ef438fcc7b9459f72042fcbc7bc890a",
+          "sha256": "e029e8ff4ba031ff896c1eca405feae25451bfe7b229e046c3e07e81df57ece2",
+          "sha1": "09ae1e992c7d8de592092b5f760d63fe6c0f6901",
+          "md5": "8a0fe682cf826ac232c0fbd3e8d11130"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.appcompat",
+          "module": "appcompat",
+          "version": {
+            "requires": "1.3.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "camera-0.0.1.aar",
+          "url": "camera-0.0.1.aar",
+          "size": 53634,
+          "sha512": "ead6444aa4fcb40fbf54f575a6390441fe9a5b41e5364fc6e9ff5e5a76d08d4c61ed1e035e16449983a8d29bb5ea9fe04ef438fcc7b9459f72042fcbc7bc890a",
+          "sha256": "e029e8ff4ba031ff896c1eca405feae25451bfe7b229e046c3e07e81df57ece2",
+          "sha1": "09ae1e992c7d8de592092b5f760d63fe6c0f6901",
+          "md5": "8a0fe682cf826ac232c0fbd3e8d11130"
+        }
+      ]
+    }
+  ]
+}
