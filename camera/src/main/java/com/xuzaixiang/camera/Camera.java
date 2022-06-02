@@ -58,6 +58,7 @@ public class Camera {
         mHandler = new CameraThread();
     }
 
+    // permission : camera
     @SuppressLint("MissingPermission")
     public void open(ResolutionPreset resolutionPreset, Callback callback) {
         if (mIsClosed.get()) {
@@ -81,6 +82,7 @@ public class Camera {
                     );
                     try {
                         cameraSession.open();
+                        callback.onOpened();
                     } catch (CameraAccessException e) {
                         close();
                         callback.onError("CameraAccess", e.getMessage());
@@ -98,38 +100,20 @@ public class Camera {
                 @Override
                 public void onDisconnected(@NonNull CameraDevice camera) {
                     close();
-                    callback.onError("openCamera", "The camera was disconnected.");
+                    callback.onError("openCamera : onDisconnected", "The camera was disconnected.");
                 }
 
                 @Override
                 public void onError(@NonNull CameraDevice camera, int error) {
                     close();
-                    String errorDescription;
-                    switch (error) {
-                        case ERROR_CAMERA_IN_USE:
-                            errorDescription = "The camera device is in use already.";
-                            break;
-                        case ERROR_MAX_CAMERAS_IN_USE:
-                            errorDescription = "Max cameras in use";
-                            break;
-                        case ERROR_CAMERA_DISABLED:
-                            errorDescription = "The camera device could not be opened due to a device policy.";
-                            break;
-                        case ERROR_CAMERA_DEVICE:
-                            errorDescription = "The camera device has encountered a fatal error";
-                            break;
-                        case ERROR_CAMERA_SERVICE:
-                            errorDescription = "The camera service has encountered a fatal error.";
-                            break;
-                        default:
-                            errorDescription = "Unknown camera error";
-                    }
-                    callback.onError("openCamera", errorDescription);
+                    callback.onError("openCamera : onError", CameraUtil.getCameraErrorDescription(error));
                 }
             }, mHandler.getHandler());
         } catch (CameraAccessException e) {
-            e.printStackTrace();
-            callback.onError("CameraAccess", e.getMessage());
+            callback.onError("CameraAccessException on openCamera : " +
+                    "the camera is disabled by device policy, has been disconnected, " +
+                    "is being used by a higher-priority camera API client, " +
+                    "or the device has reached its maximal resource and cannot open this camera device", e.getMessage());
         }
     }
 
@@ -137,7 +121,7 @@ public class Camera {
         return mIsClosed.get();
     }
 
-    public boolean isClosing(){
+    public boolean isClosing() {
         return mIsClosing.get();
     }
 
